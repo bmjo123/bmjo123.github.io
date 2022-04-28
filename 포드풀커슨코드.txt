@@ -1,0 +1,55 @@
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.List;
+
+public class Hello {
+	static Map<Integer, Map<Integer, Integer>> dif;
+	static Map<Integer, Integer> prev;
+	static final int INF = Integer.MAX_VALUE;
+	public static boolean bfs(int src, int dst) {
+		Map<Integer, Boolean> visited = new HashMap<>();
+		Queue<Integer> q = new LinkedList<>();
+		visited.put(src, true);
+		q.add(src);
+		while(!q.isEmpty()) {
+			int i = q.poll();
+			Iterator<Integer> iter = dif.get(i).keySet().iterator();
+			while(iter.hasNext()) {
+				int j = iter.next();
+				if(!visited.getOrDefault(j, false) && dif.get(i).get(j) > 0) {
+					prev.put(j, i);
+					visited.put(j, true);
+					q.add(j);
+				}
+			}
+		}
+		
+		return visited.getOrDefault(dst, false);
+	}
+		
+	public static int fordFulkerson(int src, int dst) {
+		int totalFlow = 0;
+	
+		while(bfs(src, dst)) {
+			int pathFlow = INF;
+ 
+			for(int j = dst; j != src; j = prev.get(j)) {
+				int i = prev.get(j);
+				pathFlow = Math.min(pathFlow, dif.get(i).get(j));
+			}
+			
+			for(int j = dst; j != src; j = prev.get(j)) {
+				int i = prev.get(j);
+				dif.get(i).put(j, dif.get(i).get(j) - pathFlow); 
+				dif.get(j).put(i, dif.get(j).get(i) + pathFlow);
+			}
+			totalFlow += pathFlow;
+		}
+		
+		return totalFlow;
+	
+	}
+}
