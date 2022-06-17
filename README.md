@@ -22,12 +22,62 @@ title: "유전 알고리즘을 이용한 회귀분석"
 
 # 유전 알고리즘 예제     
 
-먼저 초기해를 생성하는 함수를 만들었다. 
+먼저 초기해를 생성하는 함수를 만들었다.      
+def generate_initial_population(n);     
+initial_population = np.random.randint(0, 3,(n, 2, 5))       
+return initial_population      
+다음으로 적합도 함수를 만들면      
+def evalutate_fitness(s);      
+x1 = sum(2**(4-i) * s[0][1] for i in range(5))     
+x2 = sum(2**(4-i) * s[1][i] for i in range(5))      
+constraint_1 = (100*x1 + 50 * x2) <= 2000    
+constraint_2 = (10*x1) <= 100    
+if constraint_1 and constraint_2;    
+  fitness_value = 100 * x1 + 40*x2       
+else;       
+  fitness_value = 0;     
 
+여기서 두 해를 선택해 교차연산을 수행하는 함수를 정의하면       
+def crossover(s1, s2);      
+  crosover_point1 = np.random.randint(1, 4)        
+  crosover_point2 = np.random.randint(1, 4)        
+  child - np.empty((2, 5))       
+  child[0][:crossover_point_1] = s1[0][:crossover_point1]      
+  child[0][crossover_point_1] = s1[0][crossover_point1]       
+  child[1][:crossover_point_2] = s1[1][:crossover_point1]          
+  child[1][crossover_point_2] = s1[1][crossover_point1]           
+  
+돌연변이 연산은 a를 일어날 확률이라고 할 때, x가 1이면 0, 0이면 1로 바꾼다. if는 a확률로 선택하는데 사용된다.       
 
+def mutation(child, a);               
+  for row in range(2);                   
+    for col in range(5);          
+    if np.random.random() < a;        
+    child[row, col] = 1 - child [row,col]       
+    return child;          
+    
+함수를 정의했으므로 메인 코드를 정의하면         
 
-
-
+current_population = generate_initial_population(n)            
+best_score = -1           
+for_in range(num_iter - 1);      최대 적합도를 비교해 지금값이 크다면 바꾼다.        
+  fitness_value_list = np.array([evaluate_fitness(s) for s in current_population])            
+  if fitness_value_list.max() > best_score;         
+  best_score = fitness_value_list.max()        
+  best_s = current_population[fitness_value_list.argmax()]       
+  parents = current_population[np.argsort(-fitness_value_list)]       적합도에 따라 해 선정           
+  new_population = parents   새로운 해 정의           
+  for_in range(n - n_p):          
+    parent_1_idx, parent_2_idx = np.random.choice(n_p, 2, replace = False)            
+    parent_1 = parents[parent_1_idx]          
+    parent_2 = parents[parent_2_idx]      
+    child = crossover(parent_1, parent_2)     자식 생성하기                  
+    if np.random.random()<mutation_s_prob;       
+      child = mutation(child, mutation_gene_prob)         돌연변이 연산 실행              
+      new population = np.vstack([new_population, child.reshape(1, 2, 5])
+    
+    
+    
 ---
 layout: single
 title: "포드 풀커슨 알고리즘"   
