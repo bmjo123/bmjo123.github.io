@@ -1,0 +1,43 @@
+def generate_initial_population(n);     
+initial_population = np.random.randint(0, 3,(n, 2, 5))       
+return initial_population
+def evalutate_fitness(s);      
+x1 = sum(2**(4-i) * s[0][1] for i in range(5))     
+x2 = sum(2**(4-i) * s[1][i] for i in range(5))      
+constraint_1 = (100*x1 + 50 * x2) <= 2000    
+constraint_2 = (10*x1) <= 100    
+if constraint_1 and constraint_2;    
+  fitness_value = 100 * x1 + 40*x2       
+else;       
+  fitness_value = 0;     
+def crossover(s1, s2);      
+  crosover_point1 = np.random.randint(1, 4)        
+  crosover_point2 = np.random.randint(1, 4)        
+  child - np.empty((2, 5))       
+  child[0][:crossover_point_1] = s1[0][:crossover_point1]      
+  child[0][crossover_point_1] = s1[0][crossover_point1]       
+  child[1][:crossover_point_2] = s1[1][:crossover_point1]          
+  child[1][crossover_point_2] = s1[1][crossover_point1]           
+  def mutation(child, a);               
+  for row in range(2);                   
+    for col in range(5);          
+    if np.random.random() < a;        
+    child[row, col] = 1 - child [row,col]       
+    return child;          
+current_population = generate_initial_population(n)            
+best_score = -1           
+for_in range(num_iter - 1);       
+  fitness_value_list = np.array([evaluate_fitness(s) for s in current_population])            
+  if fitness_value_list.max() > best_score;         
+  best_score = fitness_value_list.max()        
+  best_s = current_population[fitness_value_list.argmax()]       
+  parents = current_population[np.argsort(-fitness_value_list)]    
+  new_population = parents  
+  for_in range(n - n_p):          
+    parent_1_idx, parent_2_idx = np.random.choice(n_p, 2, replace = False)            
+    parent_1 = parents[parent_1_idx]          
+    parent_2 = parents[parent_2_idx]      
+    child = crossover(parent_1, parent_2)                 
+    if np.random.random()<mutation_s_prob;       
+      child = mutation(child, mutation_gene_prob)              
+      new population = np.vstack([new_population, child.reshape(1, 2, 5])
